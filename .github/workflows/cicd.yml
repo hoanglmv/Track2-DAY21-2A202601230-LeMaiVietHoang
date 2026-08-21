@@ -7,6 +7,7 @@ on:
       - 'data/**.dvc'
       - 'src/**.py'
       - 'params.yaml'
+      - '.github/workflows/cicd.yml'
   workflow_dispatch:
 
 jobs:
@@ -18,6 +19,9 @@ jobs:
   unit-test:
     name: Unit Test
     runs-on: ubuntu-latest
+    env:
+      MLFLOW_TRACKING_URI: sqlite:///mlflow.db
+      MLFLOW_ARTIFACT_ROOT: ./mlartifacts
     steps:
       - uses: actions/checkout@v4
 
@@ -40,6 +44,9 @@ jobs:
     name: Train
     needs: unit-test
     runs-on: ubuntu-latest
+    env:
+      MLFLOW_TRACKING_URI: sqlite:///mlflow.db
+      MLFLOW_ARTIFACT_ROOT: ./mlartifacts
     outputs:
       f1: ${{ steps.read_report.outputs.f1 }}
 
